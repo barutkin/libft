@@ -9,3 +9,6 @@ I build this project on the [DRY](https://en.wikipedia.org/wiki/Don't_repeat_you
 <img src="./libft.svg" width="100%">
 
 <img src="./moulinette.png" align="center">
+
+##Update
+- added [get_next_line](https://github.com/barutkin/get_next_line)

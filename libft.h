@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <fcntl.h>
 
 # define FT_STR_LEN_MAX			10000001
 # define FT_STR_WORDS_MAX		4096
@@ -27,6 +28,9 @@
 # define FT_ULONG_MAX			(~0UL)
 # define FT_LONG_MAX			((long)(FT_ULONG_MAX >> 1))
 # define FT_LONG_MIN			((long)(~FT_LONG_MAX))
+
+# define FD_MAX		1000000
+# define BUFF_SIZE	512
 
 typedef struct		s_list
 {
@@ -106,5 +110,7 @@ char				*ft_strnchr(const char *s, int c, size_t n);
 char				*ft_strrnchr(const char *s, int c, size_t n);
 char				*ft_strstrim(char const *s, int splitter);
 char				*ft_strrev(const char *str);
+
+int					get_next_line(const int fd, char **line);
 
 #endif

@@ -6,14 +6,17 @@
 #    By: rjeraldi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/21 21:58:57 by rjeraldi          #+#    #+#              #
-#    Updated: 2019/10/01 14:58:59 by rjeraldi         ###   ########.fr        #
+#    Updated: 2020/11/07 18:09:22 by rjeraldi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
+
 DEPSDIR = .
 DEPS = libft.h
-SRCDIR = .
+DEPS = $(addprefix $(DEPSDIR)/, $(DEP))
+
+SRCSDIR = .
 SRC = ft_putchar_fd.c\
 			ft_putchar.c\
 			ft_strnlen.c\
@@ -82,39 +85,50 @@ SRC = ft_putchar_fd.c\
 			ft_lstiter.c\
 			ft_lstmap.c\
 			get_next_line.c
-OBJDIR = obj
-OBJ = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
+SRCS = $(addprefix $(SRCSDIR)/, $(SRC))
+
+OBJSDIR = ./obj
+OBJS = $(addprefix $(OBJSDIR)/, $(SRC:.c=.o))
+
 CC = /usr/bin/gcc
 CCFLAGS = -Wall -Wextra -Werror
+CCIFLAGS = -I$(DEPSDIR)
+
 AR = /usr/bin/ar
 ARFLAGS = rc
 RANLIB = /usr/bin/ranlib
 RANLIBFLAGS =
+
 RM = /bin/rm
 RMFLAGS = -rf
+
 MKDIR = /bin/mkdir
 MKDIRFLAGS = -p
 
+WORKINGDIR = `basename \`pwd\``
+
 .PHONY: all clean fclean re
 
-all: $(OBJDIR) $(NAME)
+all: $(NAME)
 
-$(OBJDIR):
-	$(MKDIR) $(MKDIRFLAGS) $@
+$(NAME): $(OBJS)
+	@echo "$(NAME): Creating static library"
+	@$(AR) $(ARFLAGS) $@ $^
+	@$(RANLIB) $(RANLIBFLAGS) $@
 
-$(NAME): $(OBJ)
-	$(AR) $(ARFLAGS) $(NAME) $^
-	$(RANLIB) $(RANLIBFLAGS) $(NAME)
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(DEPSDIR)/$(DEPS)
-	$(CC) $(CCFLAGS) -I$(DEPSDIR) -c -o $@ $<
-
-$(DEPSDIR)/$(DEPS):
+$(OBJSDIR)/%.o: $(SRCSDIR)/%.c
+	@$(MKDIR) $(MKDIRFLAGS) $(OBJSDIR)
+	@$(CC) $(CCFLAGS) $(CCIFLAGS) $< -c -o $@
 
 clean:
-	$(RM) $(RMFLAGS) $(OBJDIR)
+	@echo "$(NAME): Cleaning $(WORKINGDIR)/`basename $(OBJSDIR)`"
+	@$(RM) $(RMFLAGS) $(OBJSDIR)
 
 fclean: clean
-	$(RM) $(RMFLAGS) $(NAME)
+	@echo "$(NAME): Cleaning $(WORKINGDIR)"
+	@$(RM) $(RMFLAGS) $(NAME)
 
 re: fclean all
+
+norm: fclean
+	@norminette $(DEPSDIR) $(SRCSDIR)
